@@ -10,3 +10,5 @@ C:\Users\thiyanithi\Desktop\SearchFile\SearchFile\obj\Debug\SearchFile.pdb
 C:\Users\thiyanithi\Desktop\SearchFile\SearchFile\bin\Debug\SearchFile.exe
 C:\Users\thiyanithi\Desktop\SearchFile\SearchFile\bin\Debug\SearchFile.pdb
 C:\Users\thiyanithi\Desktop\SearchFile\SearchFile\obj\Debug\SearchFile.csprojResolveAssemblyReference.cache
+E:\Thiyanithi\Assessment 1\SearchFile\SearchFile\bin\Debug\nunit.framework.dll
+E:\Thiyanithi\Assessment 1\SearchFile\SearchFile\bin\Debug\nunit.framework.xml

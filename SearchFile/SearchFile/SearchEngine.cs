@@ -28,54 +28,31 @@
         private string sentence = string.Empty;
 
         /// <summary>
+        /// query is return which type of error occured in the execution
+        /// </summary>
+        private string query = string.Empty;
+
+        /// <summary>
         /// Search file method
         /// </summary>
         /// <param name="filepath">contain all file path</param>
         /// <param name="words">contains collections of words</param>
-        public void Searchfile(string[] filepath, string[] words)
+        public string Searchfile(string[] filepath, string[] words)
         {
-            if (words.Length == 2)
+            try
             {
-                Console.WriteLine("\tMatching One Single Word Conditions Apply\n");
-                for (int i = 0; i < filepath.Length - 1; i++)
+                if (words.Length == 2)
                 {
-                    var filewords = File.ReadAllText(filepath[i]).Split(new[] { ' ' });
-
-                    foreach (string word in filewords)
-                    {
-                        if (word == words[1])
-                        {
-                            this.files = string.Empty;
-                            this.files = this.files + " " + filepath[i];
-                            Console.WriteLine("{0}", this.files);
-                            this.count += 1;
-                            break;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-                }
-
-                Console.WriteLine("\n\t\t {0} File(s) Match.", this.count);
-            }
-            else if (words[1] == "-o")
-            {
-                if (words.Length == 4)
-                {
-                    Console.WriteLine("\t OR Conditions Applied in Both Words\n");
+                    Console.WriteLine("\tMatching One Single Word Conditions Apply\n");
                     for (int i = 0; i < filepath.Length - 1; i++)
                     {
-                        var fileinformations = File.ReadAllText(filepath[i]).Split(new[] { ' ' });
+                        var filewords = File.ReadAllText(filepath[i]).Split(new[] { ' ' });
 
-                        foreach (string word in fileinformations)
+                        foreach (string word in filewords)
                         {
-                            if (word == words[2] || word == words[3])
+                            if (word == words[1])
                             {
-                                this.files = string.Empty;
-                                this.files = this.files + " " + filepath[i];
-                                Console.WriteLine("{0}", this.files);
+                                this.files = this.files + "\n" + filepath[i];
                                 this.count += 1;
                                 break;
                             }
@@ -84,105 +61,125 @@
                                 continue;
                             }
                         }
+                        this.query = this.files + "\n" + this.count;
                     }
-
-                    Console.WriteLine("\n\t\t {0} File(s) Match.", this.count);
                 }
-                else
+                else if (words[1] == "-o")
                 {
-                    Console.WriteLine("Syntax Error:\n\t Please Enter Valid Syntax\n\n");
-                    SearchFile objSearchFile = new SearchFile();
-                    objSearchFile.Validations();
-                }
-            }
-            else if (words[1] == "-f")
-            {
-                Console.WriteLine("\t Matching group of words or sentence\n");
-                for (int word = 2; word <= words.Length - 1; word++)
-                {
-                    this.sentence = this.sentence + " " + words[word];
-                }
-
-                for (int path = 0; path < filepath.Length - 1; path++)
-                {
-                    FileStream inFile = new FileStream(filepath[path], FileMode.Open, FileAccess.Read);
-                    StreamReader reader = new StreamReader(inFile);
-                    string record;
-                    try
+                    if (words.Length == 4)
                     {
-                        record = reader.ReadLine();
-                        while (record != null)
+                        Console.WriteLine("\t OR Conditions Applied in Both Words\n");
+                        for (int i = 0; i < filepath.Length - 1; i++)
                         {
-                            if (record.Contains(this.sentence))
-                            {
-                                this.files = string.Empty;
-                                this.files = this.files + " " + filepath[path];
-                                Console.WriteLine("{0}", this.files);
-                                this.count += 1;
-                                break;
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    finally
-                    {
-                        reader.Close();
-                        inFile.Close();
-                    }
-                }
+                            var fileinformations = File.ReadAllText(filepath[i]).Split(new[] { ' ' });
 
-                Console.WriteLine("\n\t\t {0} File(s) Match.", this.count);
-            }
-            else
-            {
-                if (words.Length == 3)
-                {
-                    Console.WriteLine("\t AND Conditions Applied in Both Words\n");
-                    for (int i = 0; i < filepath.Length - 1; i++)
-                    {
-                        var fileinformations = File.ReadAllText(filepath[i]).Split(new[] { ' ' });
-
-                        foreach (string word1 in fileinformations)
-                        {
-                            if (word1 == words[1])
+                            foreach (string word in fileinformations)
                             {
-                                foreach (string word2 in fileinformations)
+                                if (word == words[2] || word == words[3])
                                 {
-                                    if (word2 == words[2])
-                                    {
-                                        this.files = string.Empty;
-                                        this.files = this.files + " " + filepath[i];
-                                        Console.WriteLine("{0}", this.files);
-                                        this.count += 1;
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        continue;
-                                    }
+                                    this.files = this.files + "\n" + filepath[i];
+                                    this.count += 1;
+                                    break;
                                 }
-
-                                break;
-                            }
-                            else
-                            {
-                                continue;
+                                else
+                                {
+                                    continue;
+                                }
                             }
                         }
+                        this.query = this.files + "\n" + this.count;
+                    }
+                    else
+                    {
+                        this.query = "Syntax Error:\n\t Please Enter Valid Syntax\n";
+                    }
+                }
+                else if (words[1] == "-f")
+                {
+                    Console.WriteLine("\t Matching group of words or sentence\n");
+                    for (int word = 2; word <= words.Length - 1; word++)
+                    {
+                        this.sentence = this.sentence + "\n" + words[word];
                     }
 
-                    Console.WriteLine("\n\t\t {0} File(s) Match.", this.count);
+                    for (int path = 0; path < filepath.Length - 1; path++)
+                    {
+                        FileStream inFile = new FileStream(filepath[path], FileMode.Open, FileAccess.Read);
+                        StreamReader reader = new StreamReader(inFile);
+                        string record;
+                        try
+                        {
+                            record = reader.ReadLine();
+                            while (record != null)
+                            {
+                                if (record.Contains(this.sentence))
+                                {
+                                    this.files = this.files + "\n" + filepath[path];                                    //Console.WriteLine("{0}", this.files);
+                                    this.count += 1;
+                                    break;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            reader.Close();
+                            inFile.Close();
+                        }
+                    }
+                    this.query = this.files + "\n" + this.count;
                 }
                 else
                 {
-                    Console.WriteLine("Syntax Error:\n\t Please Enter Valid Syntax\n\n");
-                    SearchFile objSearchFile = new SearchFile();
-                    objSearchFile.Validations();
+                    if (words.Length == 3)
+                    {
+                        Console.WriteLine("\t AND Conditions Applied in Both Words\n");
+                        for (int i = 0; i < filepath.Length - 1; i++)
+                        {
+                            var fileinformations = File.ReadAllText(filepath[i]).Split(new[] { ' ' });
+
+                            foreach (string word1 in fileinformations)
+                            {
+                                if (word1 == words[1])
+                                {
+                                    foreach (string word2 in fileinformations)
+                                    {
+                                        if (word2 == words[2])
+                                        {
+                                            this.files = this.files + "\n" + filepath[i];
+                                            this.count += 1;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            continue;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                        this.query = this.files + "\n" + this.count;
+                    }
+                    else
+                    {
+                        this.query = "Syntax Error:\n\t Please Enter Valid Syntax\n\n";
+                    }
                 }
-            }   
+            }
+            catch(IndexOutOfRangeException e)
+            {
+                Console.WriteLine("Array Index Out Of Ranges",e.ToString());
+            }
+            return this.query;
         }
     }
 }
